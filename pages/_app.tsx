@@ -1,5 +1,6 @@
 import { AppProps } from 'next/app'
 import { ThemeProvider } from 'styled-components'
+import { AnimatePresence } from "framer-motion"
 
 const theme = {
 	colors: {
@@ -7,11 +8,11 @@ const theme = {
 	},
 }
 
-
-
-const MyApp = ({ Component, pageProps }: AppProps) => {
+const MyApp = ({ Component, pageProps, router }: AppProps) => {
 	return (<ThemeProvider theme={theme}>
-		<Component {...pageProps} />
+		<AnimatePresence exitBeforeEnter>
+				<Component {...pageProps} key={router.route} />
+		</AnimatePresence>
 	</ThemeProvider>)
 }
 

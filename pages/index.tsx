@@ -1,30 +1,23 @@
 import Head from 'next/head';
+import Link from "next/link"
 import SiteLayout from "../mainComponents/layout/SiteLayout";
-import styled from "styled-components";
-
-const Main = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 80vh;
-  position: relative;
-  width: 100vw;
-`
+import { motion } from "framer-motion";
+import { homeTitle } from "../animations"
+import { Main, Linc, Pill } from "../mainComponents/components/Style"
 
 const Home = () => {
   return (
     <SiteLayout>
-      <div>
-        <Head>
-          <title key="title">Create Next App</title>
-          <link key="icon" rel="icon" href="/favicon.ico" />
-        </Head>
-        <Main>
-          <h1>
-            Home
-          </h1>
-        </Main>
-      </div>
+      <Head>
+        <title key="title">Create Next App</title>
+        <link key="icon" rel="icon" href="/favicon.ico" />
+      </Head>
+
+      <Main>
+        <Pill />
+        <motion.h1 variants={homeTitle}>Home</motion.h1>
+        <Link href="/about"><Linc>about</Linc></Link>
+      </Main>
     </SiteLayout>
   )
 }
