@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
 
 export const Main = styled.div`
   display: flex;
@@ -9,12 +9,12 @@ export const Main = styled.div`
   min-height: 80vh;
   position: relative;
   width: 100vw;
-`
+`;
 
 export const Linc = styled.a`
   text-decoration: none;
   cursor: pointer;
-`
+`;
 
 export const Pill = styled(motion.div)`
   position: absolute;
@@ -25,4 +25,4 @@ export const Pill = styled(motion.div)`
   cursor: pointer;
   background: #000;
   border-radius: 50%;
-`
+`;

@@ -1,9 +1,9 @@
-import Head from 'next/head';
-import Link from "next/link"
+import Head from "next/head";
+import Link from "next/link";
 import SiteLayout from "../mainComponents/layout/SiteLayout";
 import { motion } from "framer-motion";
-import { homeTitle } from "../animations"
-import { Main, Linc, Pill } from "../mainComponents/components/Style"
+import { homeTitle } from "../animations";
+import { Main, Linc, Pill } from "../mainComponents/components/Style";
 
 const Home = () => {
   return (
@@ -16,10 +16,12 @@ const Home = () => {
       <Main>
         <Pill />
         <motion.h1 variants={homeTitle}>Home</motion.h1>
-        <Link href="/about"><Linc>about</Linc></Link>
+        <Link href="/about">
+          <Linc>about</Linc>
+        </Link>
       </Main>
     </SiteLayout>
-  )
-}
+  );
+};
 
 export default Home;
