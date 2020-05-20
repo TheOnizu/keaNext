@@ -1,9 +1,10 @@
 import Head from "next/head";
 import Link from "next/link";
-import SiteLayout from "../mainComponents/layout/SiteLayout";
+import { Typography } from "@material-ui/core";
+import SiteLayout from "../src/components/SiteLayout";
 import { motion } from "framer-motion";
 import { homeTitle } from "../animations";
-import { Main, Linc } from "../mainComponents/components/Style";
+import { Main, Linc } from "../src/components/Style";
 
 const Home = () => {
   return (
@@ -14,10 +15,19 @@ const Home = () => {
       </Head>
 
       <Main>
-        <motion.h1 variants={homeTitle}>Home</motion.h1>
-        <Link href="/about">
-          <Linc>about</Linc>
-        </Link>
+        <motion.div initial="from" animate="to" exit="out">
+          <motion.div variants={homeTitle}>
+            <Typography variant="h1" component="h2" gutterBottom>
+              Home
+            </Typography>
+          </motion.div>
+
+          <Link href="/about">
+            <Typography variant="overline" display="block" gutterBottom>
+              <Linc>about</Linc>
+            </Typography>
+          </Link>
+        </motion.div>
       </Main>
     </SiteLayout>
   );
