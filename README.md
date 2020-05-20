@@ -30,3 +30,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 ## Reference config from
 
 https://github.com/MarchWorks/nextjs-with-material-ui-and-styled-components
+
+https://fettblog.eu/typescript-react/components/#functional-components
