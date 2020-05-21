@@ -1,3 +1,4 @@
+import { FunctionComponent } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { Typography } from "@material-ui/core";
@@ -6,7 +7,7 @@ import { Main, Linc } from "../src/components/Style";
 import SiteLayout from "../src/components/SiteLayout";
 import { aboutTitle } from "../animations";
 
-const About = () => {
+const About: FunctionComponent = () => {
   return (
     <SiteLayout>
       <div>

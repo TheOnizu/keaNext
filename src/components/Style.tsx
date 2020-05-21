@@ -6,7 +6,7 @@ export const Main = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 80vh;
+  min-height: calc(100vh - 435px);
   position: relative;
   width: 100vw;
 `;
