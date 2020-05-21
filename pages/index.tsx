@@ -1,17 +1,16 @@
-import { useEffect } from "react";
-import { FunctionComponent } from "react";
 import Head from "next/head";
-import { getContext, useActions, useValues } from "kea";
+import { useEffect } from "react";
+import { NextPage } from "next";
+import { getContext } from "kea";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Grid, LinearProgress, Button, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import SiteLayout from "../src/components/SiteLayout";
 import { CategoryCard } from "../src/components/CategoryCard";
-import { homeTitle } from "../animations";
-import { Main, Linc } from "../src/components/Style";
 import { categories } from "../config/categories";
 import { dataLogic } from "../kea/data";
+import { homeTitle } from "../animations";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,13 +37,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Home: React.FC = ({ actions: { setTitle } }) => {
+const Home: NextPage<any> = ({ actions: { setTitle } }) => {
   const classes = useStyles();
-  // const { categories, isLoading } = useValues(dataLogic);
-  // const { setTitle } = useActions(dataLogic);
 
   useEffect(() => {
-    // setTitle("home");
+    setTitle("home");
   }, []);
 
   return (
@@ -79,16 +76,6 @@ const Home: React.FC = ({ actions: { setTitle } }) => {
   );
 };
 
-// Home.getInitialProps = async function (ctx) {
-//   console.log("Index.getInitialProps");
-//   const { store } = getContext();
-
-//   const unmount = dataLogic.mount();
-//   store.dispatch(dataLogic.actions.setTitle("home"));
-//   unmount();
-// };
-
-// export default Home;
 Home.getInitialProps = async function (ctx) {
   console.log("Home.getInitialProps");
   const { store } = getContext();

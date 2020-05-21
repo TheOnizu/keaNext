@@ -1,33 +1,38 @@
 import { kea } from "kea";
 import { fire } from "../db";
 
+type pageInput = { page: string; bg: string; result: Object };
+type doc = { data: Function; id: string };
+
 export const dataLogic = kea({
   actions: () => ({
-    setTitle: (page) => ({ page }),
-    setCategory: (page) => ({ page }),
-    setFetchError: (message) => ({ message }),
+    setTitle: (page: pageInput) => ({ page }),
+    setCategory: (page: pageInput) => ({
+      page,
+    }),
+    setFetchError: (message: string): { message: string } => ({ message }),
   }),
   path: () => ["scenes", "categories"], // NEEDED!
   reducers: ({ actions }) => ({
     page: [
       {},
       {
-        [actions.setTitle]: (_, payload) => payload.page,
+        [actions.setTitle]: (_: any, payload: { page: pageInput }) =>
+          payload.page,
       },
     ],
     categories: [
       {},
       { persist: true },
       {
-        [actions.setCategory]: (state, payload) => {
-          console.log(payload, state);
+        [actions.setCategory]: (state: any, payload: { page: pageInput }) => {
           const {
-            page: { bg, name, result },
+            page: { bg, page, result },
           } = payload;
 
           return {
             ...state,
-            [`${name}`]: {
+            [page]: {
               pages: result,
               bg: bg,
             },
@@ -43,16 +48,18 @@ export const dataLogic = kea({
       },
     ],
   }),
-  listeners: ({ actions }) => {
-    console.log(actions);
+  listeners: ({ actions, values }) => {
     return {
-      [actions.setTitle]: async ({ page }, breakpoint) => {
+      [actions.setTitle]: async ({ page }, breakpoint: Function) => {
         const { all, bestSold } = fire.products;
         await breakpoint(300); // debounce for 300ms
         if (page === "home") {
-          let data;
-          const getFireData = (docs) =>
-            docs.map((d) => ({ ...d.data(), id: d.id }));
+          let data: any;
+          const getFireData = (docs: any) =>
+            docs.map((d: doc) => ({
+              ...d.data(),
+              id: d.id,
+            }));
           await Promise.all([all, bestSold])
             .then((values) => values)
             .then((value) => {
@@ -67,18 +74,6 @@ export const dataLogic = kea({
 
           return;
         }
-
-        // const result = await (
-        //   await fire.data.products.where("category", "==", page.id).get()
-        // ).docs.map((d) => {
-        //   return { ...d.data(), id: d.id };
-        // });
-        // page.name = page.name
-        //   .normalize("NFD")
-        //   .replace(/[\u0300-\u036f]/g, "")
-        //   .trim()
-        //   .toLowerCase();
-        // actions.setCategory({ ...page, result, bg: page.bg });
       },
     };
   },
