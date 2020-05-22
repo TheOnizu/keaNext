@@ -82,6 +82,11 @@ class MyApp extends App {
 
     return (
       <Provider store={store}>
+        <audio id="audio">
+          <source src="./sounds/add.caf" type="audio/caf" />
+          <source src="./sounds/add.ogg" type="audio/ogg" />
+          Your browser does not support the audio element.
+        </audio>
         <ThemeProvider theme={styledTheme}>
           <MaterialThemeProvider theme={materialTheme}>
             <AnimatePresence exitBeforeEnter>

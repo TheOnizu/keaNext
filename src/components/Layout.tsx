@@ -1,4 +1,5 @@
 import { FunctionComponent } from "react";
+import { motion } from "framer-motion";
 import { makeStyles } from "@material-ui/core";
 import { MenuHeader } from "./header";
 import { Footer } from "./footer";
@@ -16,15 +17,19 @@ type LayoutProps = {
   children: React.ReactNode;
 };
 
-const SiteLayout: FunctionComponent<LayoutProps> = ({ children }) => {
+const Layout: FunctionComponent<LayoutProps> = ({ children }) => {
   const classes = useStyles();
   return (
     <div>
       <MenuHeader />
-      <div className={classes.root}>{children}</div>
+      <div className={classes.root}>
+        <motion.div initial="from" animate="to" exit="out">
+          {children}
+        </motion.div>
+      </div>
       <Footer />
     </div>
   );
 };
 
-export default SiteLayout;
+export default Layout;

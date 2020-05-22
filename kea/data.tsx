@@ -11,8 +11,9 @@ export const dataLogic = kea({
       page,
     }),
     setFetchError: (message: string): { message: string } => ({ message }),
+    setisLoading: (loading: boolean): { loading: boolean } => ({ loading }),
   }),
-  path: () => ["scenes", "categories"], // NEEDED!
+  path: () => ["scenes"], // NEEDED!
   reducers: ({ actions }) => ({
     page: [
       {},
@@ -33,7 +34,7 @@ export const dataLogic = kea({
           return {
             ...state,
             [page]: {
-              pages: result,
+              data: result,
               bg: bg,
             },
           };
@@ -43,14 +44,27 @@ export const dataLogic = kea({
     isLoading: [
       false,
       {
+        [actions.setisLoading]: (
+          _state: Object,
+          payload: { loading: boolean }
+        ) => payload.loading,
         [actions.setTitle]: () => true,
         [actions.setCategory]: () => false,
       },
     ],
   }),
-  listeners: ({ actions, values }) => {
+  listeners: ({ actions, store }) => {
     return {
       [actions.setTitle]: async ({ page }, breakpoint: Function) => {
+        const {
+          scenes: { categories },
+        } = store.getState();
+        if (categories[page]) {
+          actions.setisLoading(false);
+          console.log("we have data in localstorage");
+          return;
+        }
+        console.log(`fetching ${page} ...`);
         const { all, bestSold } = fire.products;
         await breakpoint(300); // debounce for 300ms
         if (page === "home") {
@@ -79,11 +93,7 @@ export const dataLogic = kea({
   },
   selectors: ({ selectors }) => {
     return {
-      byCategory: [
-        () => [selectors.categories],
-        () => [selectors.isLoading],
-        (categories) => categories,
-      ],
+      byCategory: [() => [selectors.categories], () => [selectors.isLoading]],
     };
   },
 });

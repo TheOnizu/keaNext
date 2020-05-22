@@ -8,15 +8,15 @@ import {
   green,
 } from "@material-ui/core/colors";
 
-type category = {
+interface categoryType {
   name: string;
   lowerName: string;
   id: string;
   bg: string;
   img: string;
-};
+}
 
-export const categories: category[] = [
+export const categories: Array<categoryType> = [
   {
     name: "Légumes",
     lowerName: "legumes",
@@ -67,3 +67,49 @@ export const categories: category[] = [
     img: "/basket.jpg",
   },
 ];
+
+export const categoryObject = {
+  "1t5jiT85ZWtCRVtEZJlZ": {
+    name: "Légumes",
+    lowerName: "legumes",
+    id: "1t5jiT85ZWtCRVtEZJlZ",
+    bg: green[600],
+    img: "/vegetables.jpg",
+  },
+  "4sLiQozuTETYxKepfsKt": {
+    name: "Poissons",
+    lowerName: "poissons",
+    bg: grey[600],
+    img: "/sea.jpg",
+  },
+  apaZxnGJfcKRDKKsr7jA: {
+    name: "Crèmerie",
+    lowerName: "cremerie",
+    bg: deepOrange[600],
+    img: "/cream.jpg",
+  },
+  lyAehUmm0jBxkuXtTuq9: {
+    name: "Produits sec",
+    lowerName: "produits_sec",
+    bg: brown[600],
+    img: "/dry.jpg",
+  },
+  qJ1cHgPWRGTANlLNtC4S: {
+    name: "Fruits",
+    lowerName: "fruits",
+    bg: orange[600],
+    img: "/friuts_2.jpg",
+  },
+  ZkBO6OBaiwoH0byolWlu: {
+    name: "Viandes",
+    lowerName: "viandes",
+    bg: red[600],
+    img: "/meat.jpg",
+  },
+  EmvctAukSJmq4lWvywmI: {
+    name: "Paniers",
+    lowerName: "paniers",
+    bg: lightGreen[600],
+    img: "/basket.jpg",
+  },
+};

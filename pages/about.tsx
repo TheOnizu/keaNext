@@ -4,12 +4,12 @@ import Link from "next/link";
 import { Typography } from "@material-ui/core";
 import { motion } from "framer-motion";
 import { Main, Linc } from "../src/components/Style";
-import SiteLayout from "../src/components/SiteLayout";
+import Layout from "../src/components/Layout";
 import { aboutTitle } from "../animations";
 
 const About: FunctionComponent = () => {
   return (
-    <SiteLayout>
+    <Layout>
       <div>
         <Head>
           <title key="title">about Next App</title>
@@ -31,7 +31,7 @@ const About: FunctionComponent = () => {
           </motion.div>
         </Main>
       </div>
-    </SiteLayout>
+    </Layout>
   );
 };
 
