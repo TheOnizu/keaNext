@@ -113,6 +113,19 @@ const Home: NextPage<any> = ({
             </Grid>
           ))}
       </Grid>
+
+      <SectionTitle title="Meilleures ventes" />
+
+      <Grid container spacing={3} className={classes.grid}>
+        {isLoadedAndHasData &&
+          bestSold.map((data) => (
+            <Grid item xl={2} lg={3} md={6} sm={6} xs={12} key={data.id}>
+              <motion.div whileHover={{ scale: 1.06 }}>
+                <ProductCard data={data} key={data.id} />
+              </motion.div>
+            </Grid>
+          ))}
+      </Grid>
     </Layout>
   );
 };
