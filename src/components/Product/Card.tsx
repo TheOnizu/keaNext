@@ -156,6 +156,7 @@ const ProductCard = ({
             className={classes.fab}
             onClick={() => {
               // palyAddSound();
+              add(dataToAdd);
             }}
           >
             <AddIcon />
