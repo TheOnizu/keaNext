@@ -8,7 +8,9 @@ export const cartLogic = kea({
     decrease_qtt: (id) => ({ id }),
     reset: () => {},
   }),
-  path: () => ["scenes", "cart"],
+
+  path: () => ["scenes"],
+
   reducers: ({ actions }) => {
     return {
       cart: [
@@ -21,10 +23,8 @@ export const cartLogic = kea({
           [actions.add]: (state, payload) => {
             if (state[payload.item.id]) {
               state[payload.item.id].qtt += payload.item.qtt;
-              // animate().play();
               return { ...state };
             }
-            animate().play();
             return { ...state, [payload.item.id]: payload.item };
           },
           [actions.remove]: (state, payload) => {

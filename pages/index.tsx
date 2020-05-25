@@ -2,17 +2,17 @@ import Head from "next/head";
 import { motion } from "framer-motion";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { NextPage } from "next";
-import { getContext } from "kea";
-import Link from "next/link";
+import { useValues, useActions } from "kea";
+// import Link from "next/link";
 import { Grid, LinearProgress, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Layout from "../src/components/Layout";
 import { CategoryCard } from "../src/components/Category/CategoryCard";
-import { ProductCard } from "../src/components/Product/Card";
+import ProductCard from "../src/components/Product/Card";
 import { SectionTitle } from "../src/components/SectionTitle";
-import { categories } from "../config/categories";
+import { categoriesList } from "../config/categories";
 import { dataLogic } from "../kea/data";
-import { homeTitle } from "../animations";
+// import { homeTitle } from "../animations";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,25 +42,32 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Home: NextPage<any> = ({
-  actions: { setTitle },
-  categories: { home },
-  isLoading,
-}) => {
+const Home: NextPage<any> = (
+  {
+    // actions: { setTitle },
+    // categories: { home },
+    // isLoading,
+  }
+) => {
+  const classes = useStyles();
   const [list, setList] = useState([]);
   const [bestSold, setBestSold] = useState([]);
   const [isLoadedAndHasData, setLoaded] = useState(false);
-  const classes = useStyles();
+  const { categories, isLoading } = useValues(dataLogic);
+  const { setTitle } = useActions(dataLogic);
 
   useEffect(() => {
-    setTitle("home");
+    // setTitle("home");
   }, []);
 
   useLayoutEffect(() => {
-    setList(home.data.list);
-    setBestSold(home.data.bestSold);
-    setLoaded(Boolean(list.length));
-  }, [isLoading, list]);
+    const { home } = categories;
+    if (home) {
+      setList(home.data.list);
+      setBestSold(home.data.bestSold);
+      setLoaded(Boolean(list.length));
+    }
+  }, [isLoading, list, bestSold]);
 
   return (
     <Layout>
@@ -84,7 +91,7 @@ const Home: NextPage<any> = ({
       </Grid>
 
       <Grid container spacing={3}>
-        {categories.map((category) => (
+        {categoriesList.map((category) => (
           <Grid item xs key={category.id}>
             <CategoryCard category={category} />
           </Grid>
@@ -104,39 +111,30 @@ const Home: NextPage<any> = ({
       </Grid>
 
       <Grid container spacing={3} className={classes.grid}>
-        {isLoadedAndHasData &&
-          list.map((data) => (
-            <Grid item xl={2} lg={3} md={6} sm={6} xs={12} key={data.id}>
-              <motion.div whileHover={{ scale: 1.06 }}>
-                <ProductCard data={data} key={data.id} />
-              </motion.div>
-            </Grid>
-          ))}
-      </Grid>
-
-      <SectionTitle title="Meilleures ventes" />
-
-      <Grid container spacing={3} className={classes.grid}>
-        {isLoadedAndHasData &&
-          bestSold.map((data) => (
-            <Grid item xl={2} lg={3} md={6} sm={6} xs={12} key={data.id}>
-              <motion.div whileHover={{ scale: 1.06 }}>
-                <ProductCard data={data} key={data.id} />
-              </motion.div>
-            </Grid>
-          ))}
+        <Grid item xl={2} lg={3} md={6} sm={6} xs={12}>
+          <motion.div whileHover={{ scale: 1.06 }}>
+            <ProductCard
+              data={{
+                id: "123",
+                min_descr: "litle description",
+                price: 3,
+                description: "big description",
+                title: "Apple",
+                category: "qJ1cHgPWRGTANlLNtC4S",
+                image: null,
+                unity: "/kg",
+                soldCount: 5,
+                qtt: 0,
+                wieght: 0.5,
+                watch_qtt: false,
+              }}
+            />
+          </motion.div>
+        </Grid>
       </Grid>
     </Layout>
   );
 };
 
-Home.getInitialProps = async function (ctx) {
-  console.log("Home.getInitialProps");
-  const { store } = getContext();
-
-  const unmount = dataLogic.mount();
-  store.dispatch(dataLogic.actions.setTitle("home"));
-  unmount();
-};
-
-export default dataLogic(Home);
+Home.dataLogic = dataLogic;
+export default Home;

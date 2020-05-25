@@ -1,94 +1,74 @@
-import { Provider } from "react-redux";
-import App from "next/app";
+// pages/_app.js
+import React from "react";
 import { resetContext, getContext } from "kea";
+import { Provider } from "react-redux";
+import withRedux from "next-redux-wrapper";
+import App from "next/app";
 import localStoragePlugin from "kea-localstorage";
-import { ThemeProvider } from "styled-components";
 import { ThemeProvider as MaterialThemeProvider } from "@material-ui/styles";
+import { ThemeProvider } from "styled-components";
 import { AnimatePresence } from "framer-motion";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { styledTheme, materialTheme } from "../src/theme";
 import "../src/styles.css";
 
-export const initKeaContext = (initialState = {}) => {
-  console.log("in initKeaContext, got initialState", initialState);
+// How long do we try to render on the server before giving up? In milliseconds.
+const SERVER_RENDER_TIMEOUT = 1000;
 
-  resetContext({
-    defaults: initialState, // defaults for logic
-    plugins: [localStoragePlugin],
-    attachStrategy: "dispatch",
-    detachStrategy: "dispatch",
-    createStore: {
-      paths: ["kea", "scenes"],
-      preloadedState: initialState, // for non-kea reducers
-    },
+const makeStore = (initialState, options) => {
+  // Reset Kea's context and pass `initialState` as defaults.
+  // Add all plugins and other configuration here.
+  const context = resetContext({
+    defaults: initialState,
+    createStore: true,
+    plugins: [
+      localStoragePlugin({
+        storageEngine: process.browser ? window.localStorage : null,
+      }),
+    ],
   });
+  return context.store;
 };
 
 class MyApp extends App {
-  constructor(props) {
-    super(props);
-    console.log("MyApp constructor");
-
-    if (typeof window !== "undefined") {
-      const { ...otherState } = props.initialState;
-      initKeaContext(otherState);
-      window.getContext = getContext;
-      const jssStyles = document.querySelector("#jss-server-side");
-      if (jssStyles) {
-        jssStyles.parentNode.removeChild(jssStyles);
-      }
-    }
-  }
-
   static async getInitialProps({ Component, ctx }) {
-    console.log("MyApp.getInitialProps");
+    const pageProps = Component.getInitialProps
+      ? await Component.getInitialProps(ctx)
+      : {};
 
-    if (typeof window === "undefined") {
-      initKeaContext();
+    // In case we are server rendering and our `Component` has a `logic` attached
+    // to it, initialize it through a promise and pass the `resolve` function to
+    // the logic as props.
+
+    // It's then up to the logic to call `props.resolve()` when it has finished
+    // its setup.
+
+    if (ctx.isServer && Component.logic) {
+      await Promise.race([
+        new Promise((resolve) => Component.logic({ resolve }).mount()),
+        new Promise((resolve) => setTimeout(resolve, SERVER_RENDER_TIMEOUT)),
+      ]);
     }
 
-    // console.log('store state in MyApp.getInitialProps', getContext().store.getState())
-
-    // so we can still capture the state after the getInitialState logic unmounts
-    getContext().options.detachStrategy = "persist";
-
-    let pageProps = {};
-
-    if (Component.getInitialProps) {
-      pageProps = await Component.getInitialProps(ctx);
-    } else if (
-      Component._wrapper &&
-      Component._wrappedComponent &&
-      Component._wrappedComponent.getInitialProps
-    ) {
-      pageProps = await Component._wrappedComponent.getInitialProps(ctx);
-    }
-
-    let initialState = getContext().store.getState();
-
-    getContext().options.detachStrategy = "dispatch";
-
-    console.log("returning from MyApp.getInitialProps", {
-      pageProps,
-      initialState,
-    });
-
-    return { pageProps, initialState };
+    return { pageProps };
   }
 
   render() {
     const { Component, pageProps, router } = this.props;
     const { store } = getContext();
+    const AudioContent = () => (
+      <audio id="audio">
+        <source src="./sounds/add.caf" type="audio/caf" />
+        <source src="./sounds/add.ogg" type="audio/ogg" />
+        Your browser does not support the audio element.
+      </audio>
+    );
 
     return (
-      <Provider store={store}>
-        <audio id="audio">
-          <source src="./sounds/add.caf" type="audio/caf" />
-          <source src="./sounds/add.ogg" type="audio/ogg" />
-          Your browser does not support the audio element.
-        </audio>
-        <ThemeProvider theme={styledTheme}>
-          <MaterialThemeProvider theme={materialTheme}>
+      <Provider key="provider" store={store}>
+        <AudioContent />
+        <ThemeProvider key="styledTheme" theme={styledTheme}>
+          <MaterialThemeProvider key="materialTheme" theme={materialTheme}>
             <AnimatePresence exitBeforeEnter>
               <CssBaseline />
               <Component {...pageProps} key={router.route} />
@@ -99,5 +79,4 @@ class MyApp extends App {
     );
   }
 }
-
-export default MyApp;
+export default withRedux(makeStore)(MyApp);

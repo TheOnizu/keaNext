@@ -1,7 +1,7 @@
 import { FunctionComponent } from "react";
 import Link from "next/link";
 import { makeStyles, Typography, Grid } from "@material-ui/core";
-import { categories } from "../../../config/categories";
+import { categoriesList } from "../../../config/categories";
 import { Linc } from "../Style";
 
 const useStyles = makeStyles((theme) => ({
@@ -33,7 +33,7 @@ export const Footer: FunctionComponent = () => {
     <footer className={classes.container}>
       <Grid container direction="row" justify="flex-start">
         <Grid item xs={4}>
-          {categories.map((category) => {
+          {categoriesList.map((category) => {
             return (
               <Link
                 key={`${category.lowerName}_#_${category.bg}`}

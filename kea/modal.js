@@ -2,32 +2,31 @@ import { kea } from "kea";
 
 export const modalLogic = kea({
   actions: () => ({
-    open: (open, data) => ({ open, data }),
-    close: (open) => ({ open }),
-    superOpen: (open, data) => ({ open, data }),
-    superClose: (open) => ({ open }),
+    open: (data) => ({ data }),
+    close: function () {},
+    superOpen: (data) => ({ data }),
+    superClose: function () {},
   }),
   reducers: ({ actions }) => {
     return {
       superModal: [
         false,
         {
-          [actions.superOpen]: (state, payload) => true,
-          [actions.superClose]: (state, payload) => false,
+          [actions.superOpen]: () => true,
+          [actions.superClose]: () => false,
         },
       ],
       modal: [
         false,
         {
-          [actions.open]: (state, payload) => payload.open,
-          [actions.close]: (state, payload) => payload.open,
+          [actions.open]: () => true,
+          [actions.close]: () => false,
         },
       ],
       currentData: [
         {},
         {
-          [actions.open]: (state, payload) => payload.data,
-          // [actions.close]: (state, payload) => payload.open,
+          [actions.open]: (_state, payload) => payload.data,
         },
       ],
     };

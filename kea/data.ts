@@ -1,5 +1,6 @@
 import { kea } from "kea";
 import { fire } from "../db";
+import { categoryObject } from "../config/categories";
 
 type pageInput = { page: string; bg: string; result: Object };
 type doc = { data: Function; id: string };
@@ -30,13 +31,14 @@ export const dataLogic = kea({
           const {
             page: { bg, page, result },
           } = payload;
+          console.log(payload);
 
           return {
-            ...state,
             [page]: {
               data: result,
-              bg: bg,
+              bg,
             },
+            ...state,
           };
         },
       },
@@ -59,6 +61,7 @@ export const dataLogic = kea({
         const {
           scenes: { categories },
         } = store.getState();
+        console.log(actions);
         if (categories[page]) {
           actions.setisLoading(false);
           console.log("we have data in localstorage");
@@ -88,6 +91,20 @@ export const dataLogic = kea({
 
           return;
         }
+
+        // console.log("your here", page.id, fire);
+        const result = await fire
+          .search(page.id)
+          .then(
+            async (data) =>
+              await data.docs.map((d) => ({ ...d.data(), id: d.id }))
+          );
+
+        actions.setCategory({
+          page: categoryObject[page.id].lowerName,
+          bg: categoryObject[page.id].bg,
+          result,
+        });
       },
     };
   },

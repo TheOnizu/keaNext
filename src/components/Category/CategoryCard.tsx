@@ -1,4 +1,5 @@
 import React from "react";
+import { useActions } from "kea";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Typography,
@@ -8,6 +9,7 @@ import {
   Fab,
 } from "@material-ui/core";
 import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
+import { dataLogic } from "../../../kea/data";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,8 +27,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const CategoryCard = ({ category }) => {
-  //   const { setTitle } = useActions(dataLogic);
-  const { name, bg } = category;
+  const { setTitle } = useActions(dataLogic);
+  const { name, id, bg } = category;
 
   const classes = useStyles();
   return (
@@ -54,7 +56,7 @@ export const CategoryCard = ({ category }) => {
         <Fab
           //   component={Link}
           //   src={{ pathname: `/category/${newName}` }}
-          //   onClick={() => setTitle({ name, id, bg })}
+          onClick={() => setTitle({ name, id, bg })}
           aria-label={name}
           className={classes.fab}
           style={{ background: bg }}

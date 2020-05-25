@@ -16,7 +16,7 @@ interface categoryType {
   img: string;
 }
 
-export const categories: Array<categoryType> = [
+export const categoriesList: Array<categoryType> = [
   {
     name: "Légumes",
     lowerName: "legumes",

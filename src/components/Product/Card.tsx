@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useActions } from "kea";
-import Card from "@material-ui/core/Card";
+import React, { useState, useEffect } from "react";
+import { getContext, useActions, connect } from "kea";
 import {
   Fab,
+  Card,
   Chip,
   Typography,
   CardContent,
@@ -11,15 +11,13 @@ import {
   CardMedia,
   IconButton,
 } from "@material-ui/core";
-
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import LocalMallIcon from "@material-ui/icons/LocalMall";
-
 import { categoryObject } from "../../../config/categories";
-import { cartLogic } from "../../../kea/cart";
 import { modalLogic } from "../../../kea/modal";
+import { cartLogic } from "../../../kea/cart";
 import { useStyles } from "./style";
 
 interface CardType {
@@ -30,6 +28,9 @@ interface CardType {
   watch_qtt: Boolean;
   wieght: number;
   category: string;
+  soldCount?: number;
+  description?: string;
+  min_desc?: string;
   id: string;
   image: {
     price: number;
@@ -43,16 +44,44 @@ interface ProductType {
   popUp?: Boolean;
 }
 
-export const ProductCard = ({
-  data: { min_descr, price, title, category, image, unity },
+const ProductCard = ({
+  data: {
+    id,
+    min_descr,
+    price,
+    description,
+    title,
+    category,
+    image,
+    unity,
+    soldCount,
+  },
   popUp = false,
 }: ProductType) => {
   const classes = useStyles();
   const [qtt, setQtt] = useState(1);
-  // const { open, close } = useActions(modalLogic);
-  // const { add } = useActions(cartLogic);
+  const { open, close } = useActions(modalLogic);
+  const { add } = useActions(cartLogic);
   const _height = popUp ? 380 : 200;
   const linkedCat = categoryObject[category];
+  const dataToSend = {
+    id,
+    min_descr,
+    price,
+    description,
+    title,
+    category,
+    image,
+    unity,
+    soldCount,
+  };
+  const dataToAdd = {
+    id,
+    name: title,
+    price,
+    qtt,
+    soldCount: soldCount ? soldCount : 0,
+  };
 
   const palyAddSound = () => {
     const audio: HTMLAudioElement = document.getElementById("audio");
@@ -64,13 +93,15 @@ export const ProductCard = ({
 
   const increaseQtt = () => setQtt(qtt + 1);
   const decreaseQtt = () => !(qtt <= 1) && setQtt(qtt - 1);
-  // const resetQtt = () => setQtt(1);
+  const resetQtt = () => setQtt(1);
 
   return (
     <Card className={classes.root} variant="outlined">
       <div
         style={{ cursor: "pointer" }}
-        onClick={() => console.log("open modal")}
+        onClick={() => {
+          open(dataToSend);
+        }}
       >
         <CardHeader title={title} subheader="" />
         <CardContent style={{ paddingBottom: 0 }}>
@@ -124,8 +155,7 @@ export const ProductCard = ({
             aria-label="add"
             className={classes.fab}
             onClick={() => {
-              palyAddSound();
-              console.log("add hello");
+              // palyAddSound();
             }}
           >
             <AddIcon />
@@ -158,19 +188,13 @@ export const ProductCard = ({
           )}
           {popUp && (
             <IconButton
-              // style={{ backgroundColor: linkedCat.bg }}
+              style={{ backgroundColor: linkedCat.bg }}
               aria-label="add to favorites"
               className={classes.addToCart}
               onClick={() => {
-                // add({
-                //   id: id,
-                //   name: title,
-                //   price: price,
-                //   qtt,
-                //   soldCount: soldCount ? data.soldCount : 0,
-                // });
-                // reset_qtt();
-                // close(false);
+                // add(dataToAdd);
+                resetQtt();
+                close();
               }}
             >
               <LocalMallIcon />
@@ -181,3 +205,5 @@ export const ProductCard = ({
     </Card>
   );
 };
+
+export default ProductCard;
